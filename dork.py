@@ -1,6 +1,7 @@
-
+#Created By ARXU
 import requests
 import getpass
+from termcolor import colored
 
 def find_admin_panel(target_url, username, password):
     # Load the admin dorks from a text file
@@ -14,14 +15,15 @@ def find_admin_panel(target_url, username, password):
         'Status Codes': {}
     }
 
-    # Print your logo
-    print(" __    __   _______  __       __        ______")
-    print("|  |  |  | |   ____||  |     |  |      /  __  \ ")
-    print("|  |__|  | |  |__   |  |     |  |     |  |  |  | ")
-    print("|   __   | |   __|  |  |     |  |     |  |  |  | ")
-    print("|  |  |  | |  |____ |  .|  --.|  --'  | ")
-    print("||  || |___| \/ ")
-    print("\n ARXU'S BAD MAGIC \n")
+    # Print your logo with colors
+    print(colored(" __    __   _______  __       __        ______", 'green'))
+    print(colored("|  |  |  | |   ____||  |     |  |      /  __  \ ", 'green'))
+    print(colored("|  |__|  | |  |__   |  |     |  |     |  |  |  | ", 'green'))
+    print(colored("|   __   | |   __|  |  |     |  |     |  |  |  | ", 'green'))
+    print(colored("|  |  |  | |  |____ |  .|  --.|  --'  | ", 'green'))
+    print(colored("||  || |___| \/ ", 'green'))
+    print(colored("\n ARXU'S BAD MAGIC \n", 'red'))
+    print(colored("Telegram : https://t.me/A0R3A", 'blue'))
 
     # Prompt for username and password
     username_input = input("Enter your username: ")
@@ -41,20 +43,32 @@ def find_admin_panel(target_url, username, password):
                 results['Status Codes'][full_url] = status_code
 
                 # Check for all standard HTTP status codes
-                if 100 <= status_code < 200 or \
-                    200 <= status_code < 300 or \
-                    300 <= status_code < 400 or \
-                    400 <= status_code < 500 or \
-                    500 <= status_code < 600:
+                if 100 <= status_code < 200:
+                    color = 'green'
+                elif 200 <= status_code < 300:
+                    color = 'blue'
+                elif 300 <= status_code < 400:
+                    color = 'yellow'
+                elif 400 <= status_code < 500:
+                    color = 'red'
+                elif 500 <= status_code < 600:
+                    color = 'magenta'
+                else:
+                    color = 'white'
+
+                status_code_message = colored(f"Status Code: {status_code}", color)
+                results['Status Codes'][full_url] = status_code_message
+
+                if status_code in [200, 400, 404]:
                     results['Admin Panels Found'].append(full_url)
 
             except requests.exceptions.RequestException as e:
-                print(f"\nERROR: {e}")
+                print(colored(f"\nERROR: {e}", 'red'))
                 print("Ahhh, the dark magic of the interwebs thwarts our progress!\n")
                 break
 
     else:
-        print("Incorrect username or password. Access denied.")
+        print(colored("Incorrect username or password. Access denied.", 'red'))
         return
 
     return results
@@ -63,11 +77,11 @@ def find_admin_panel(target_url, username, password):
 target_url = input("Enter the target URL (including http(s)://): ")
 
 # Prompt for username and password
-username = input("Enter your username:")
-password = getpass.getpass("Enter your password:")
+username = input("Enter your username: ")
+password = getpass.getpass("Enter your password: ")
 
 # Start the scanning process
-print("Scanning for admin panels... ")
+print(colored("Scanning for admin panels... ", 'blue'))
 results = find_admin_panel(target_url, username, password)
 
 # Print the results
@@ -77,4 +91,4 @@ if 'Admin Panels Found' in results:
     print("Admin Panels Found:", results['Admin Panels Found'])
     print("Status Codes:", results['Status Codes'])
 else:
-    print("No admin panels found.")
+    print(colored("No admin panels found.", 'red'))
